@@ -1,7 +1,9 @@
 package com.nadetdev.springdataredis.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +14,10 @@ public class ProductDAO {
 
 	private static final String HASH_KEY = "Product";
 
+	@Autowired
 	private RedisTemplate<String, Product> template;
+	
+	private List<Object> productList = new ArrayList<>();
 	
 
 	public Product save(Product product) {
@@ -22,7 +27,14 @@ public class ProductDAO {
 	}
 
 	public List<Object> findAll() {
-		return template.opsForHash().values(HASH_KEY);
+		
+		productList = template.opsForHash().values(HASH_KEY);
+		
+		if(productList != null ) {
+			return productList;
+		}
+		
+		return productList;
 	}
 
 	public Product findById(int id) {
