@@ -1,0 +1,51 @@
+package com.nadetdev.springdataredis.repository;
+
+import java.util.List;
+
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.nadetdev.springdataredis.entity.Product;
+
+@Repository
+public class ProductDAO {
+
+	private static final String HASH_KEY = "Product";
+
+	private RedisTemplate<String, Product> template;
+	
+
+	public Product save(Product product) {
+
+		template.opsForHash().put(HASH_KEY, product.getId(), product);
+		return product;
+	}
+
+	public List<Object> findAll() {
+		return template.opsForHash().values(HASH_KEY);
+	}
+
+	public Product findById(int id) {
+		Product product = (Product) template.opsForHash().get(HASH_KEY, id);
+		
+		if(product != null ) {
+			return product;
+		}
+		
+		return null;
+	}
+
+	public String delete(int id) {
+
+		Product product = findById(id);
+
+		if (product != null) {
+
+			template.opsForHash().delete(HASH_KEY, id);
+			return "Product deleted";
+		}
+
+		return "Product with id "+ id +" not exist";
+	}
+
+}
