@@ -3,6 +3,7 @@ package com.nadetdev.springdataredis.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,9 +18,15 @@ import com.nadetdev.springdataredis.repository.ProductDAO;
 @RequestMapping("/product")
 public class ProductController {
 	
-	@Autowired
 	private ProductDAO productDAO;
 	
+	@Autowired
+	public ProductController(ProductDAO productDAO) {
+		super();
+		this.productDAO = productDAO;
+	}
+	
+
 	@PostMapping
 	public Product save(@RequestBody Product product) {
 		return productDAO.save(product);
@@ -37,7 +44,7 @@ public class ProductController {
 		return productDAO.findById(id);
 	}
 	
-	@GetMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	public String deleteProduct(@PathVariable int id) {
 		return productDAO.delete(id);
 	}
